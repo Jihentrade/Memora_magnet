@@ -1,0 +1,120 @@
+.g-container {
+  background-color: rgb(252, 252, 252);
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.containerDash {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 25px;
+}
+.card-user {
+  background-color: rgb(255, 255, 255);
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 0px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.card-stat {
+  background-color: white;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  width: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+.sub-content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.title-card-user {
+  font-weight: 600;
+  font-size: 16px;
+}
+.id {
+  padding: 5px 0px;
+  font-size: 20px;
+  font-weight: 600;
+  color: lightseagreen;
+}
+.subtitle-id {
+  font-size: 15px;
+  font-weight: 500;
+  color: gray;
+}
+.devider-card-user {
+  width: 100%;
+  height: 1px;
+  background-color: #dddddd;
+  margin: 15px 0px;
+}
+.l-content {
+  display: flex;
+  flex-direction: column;
+  padding-left: 15px;
+}
+.r-content {
+  padding-right: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  color: lightseagreen;
+}
+.username-style-card-user {
+  font-weight: 600;
+  font-size: 15px;
+}
+.sub-devider-wlc {
+  width: 15%;
+  height: 2px;
+  background-color: #dddddd;
+  margin: 5px 0px;
+}
+.card-title-card-stat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 3px 5px;
+  margin: 15px 35px;
+}
+.title-nl-style {
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  margin-left: 10px;
+}
+.nbr-nl-style {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 15px 0px;
+}
+.btn-card-stat {
+  background-color: white;
+  border-radius: 25px;
+  padding: 5px 25px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600px;
+  text-decoration: none;
+  color: black;
+  transition: all 0.1s ease-in-out;
+}
+.btn-card-stat:hover {
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+  padding: 5px 35px;
+  transition: all 0.1s ease-in-out;
+}
