@@ -32,7 +32,7 @@ const ServicesSection = () => {
       icon: Delivery,
       title: "Politique de remboursement",
       description:
-        "Nous nous engageons à votre entière satisfaction pour chaque achat effectué. Si vous rencontrez le moindre souci avec votre commande, n'hésitez pas à nous contacter. Nous ferons tout notre possible pour résoudre votre problème ou vous rembourser intégralement.",
+        "Votre satisfaction est notre priorité. En cas de souci avec votre commande, contactez-nous : nous trouverons une solution ou vous rembourserons..",
       bgColor: "#FFFFEC",
       link: "/contactezNous",
     },
