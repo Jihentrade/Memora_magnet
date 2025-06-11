@@ -50,7 +50,10 @@ const Accueil = () => {
   return (
     <div>
       <Navbar />
-      <div className="container">
+      <div
+        className="container"
+        style={{ maxWidth: "100vw", overflowX: "hidden" }}
+      >
         <Box
           sx={{
             backgroundColor: "white",
@@ -61,6 +64,7 @@ const Accueil = () => {
           <img
             src={Couverture}
             alt=""
+            loading="lazy"
             style={{
               objectFit: "cover",
               width: "100%",
@@ -163,6 +167,7 @@ const Accueil = () => {
                     <img
                       src={image}
                       alt={`Image client ${index}`}
+                      loading="lazy"
                       style={{
                         width: "100%",
                         height: "auto",

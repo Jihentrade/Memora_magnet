@@ -54,6 +54,7 @@ const Footer = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: { xs: "center", md: "flex-start" },
+                textAlign: { xs: "center", md: "left" },
                 mb: { xs: 1, md: 0 },
               }}
             >
@@ -82,12 +83,13 @@ const Footer = () => {
           </Grid>
 
           {/* Information Section */}
-          <Grid item xs={6} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: { xs: "flex-start", md: "flex-start" },
+                alignItems: { xs: "center", md: "flex-start" },
+                textAlign: { xs: "center", md: "left" },
               }}
             >
               <Typography
@@ -157,12 +159,13 @@ const Footer = () => {
           </Grid>
 
           {/* Social Section */}
-          <Grid item xs={6} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: { xs: "flex-start", md: "flex-start" },
+                alignItems: { xs: "center", md: "flex-start" },
+                textAlign: { xs: "center", md: "left" },
               }}
             >
               <Typography
@@ -173,6 +176,7 @@ const Footer = () => {
                   mb: 1,
                   color: "#176B87",
                   fontSize: { xs: "1rem", md: "1.1rem" },
+                  textAlign: { xs: "center", md: "left" },
                 }}
               >
                 Suivez-Nous
@@ -181,7 +185,7 @@ const Footer = () => {
                 sx={{
                   display: "flex",
                   gap: 1.5,
-                  justifyContent: { xs: "flex-start", md: "flex-start" },
+                  justifyContent: { xs: "center", md: "flex-start" },
                 }}
               >
                 <Link
@@ -224,7 +228,8 @@ const Footer = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: { xs: "flex-start", md: "flex-start" },
+                alignItems: { xs: "center", md: "flex-start" },
+                textAlign: { xs: "center", md: "left" },
               }}
             >
               <Typography

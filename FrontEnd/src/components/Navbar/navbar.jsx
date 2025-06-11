@@ -48,9 +48,10 @@ const Navbar = () => {
       <Toolbar
         sx={{
           backgroundColor: "#FFFFEC",
+          boxShadow: { xs: 2, sm: 0 },
           display: "flex",
           justifyContent: "space-between",
-          padding: { xs: "4px 16px", sm: "8px 24px", md: "8px 32px" },
+          padding: { xs: "4px 8px", sm: "8px 24px", md: "8px 32px" },
           minHeight: { xs: "56px", sm: "64px", md: "60px" },
           maxHeight: { xs: "56px", sm: "64px", md: "60px" },
         }}
@@ -66,20 +67,34 @@ const Navbar = () => {
             src={logo}
             alt="Logo"
             style={{
-              width: isMobile ? "50px" : "60px",
+              width: isMobile
+                ? window.innerWidth < 600
+                  ? "38px"
+                  : "50px"
+                : "60px",
               height: "auto",
-              marginRight: "10px",
+              marginRight: window.innerWidth < 600 ? "6px" : "10px",
             }}
           />
           <Typography
-            variant={isMobile ? "subtitle1" : "h6"}
+            variant={
+              isMobile
+                ? window.innerWidth < 600
+                  ? "body1"
+                  : "subtitle1"
+                : "h6"
+            }
             noWrap
             sx={{
               fontFamily: "monospace",
               fontWeight: "bold",
               color: "#176B87",
               textDecoration: "none",
-              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+              fontSize: {
+                xs: window.innerWidth < 600 ? "0.95rem" : "1rem",
+                sm: "1.1rem",
+                md: "1.25rem",
+              },
             }}
           >
             Memora
