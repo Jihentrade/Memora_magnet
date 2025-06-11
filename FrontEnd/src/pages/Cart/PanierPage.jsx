@@ -28,7 +28,7 @@ import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/footer";
-
+import panierIMG from "../../../src/assets/PAP_810.png";
 const PanierPage = () => {
   // Données fictives pour l'exemple
   const [quantity, setQuantity] = useState(1);
@@ -44,11 +44,15 @@ const PanierPage = () => {
     adresse: "",
   });
   const [errors, setErrors] = useState({});
+  const [reduction, setReduction] = useState(0); // en pourcentage
+  const [promoError, setPromoError] = useState(""); // message d'erreur
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const price = 12.49;
   const shipping = 5.99;
-  const total = (price * quantity + shipping).toFixed(2);
+  const sousTotal = price * quantity;
+  const reductionMontant = sousTotal * (reduction / 100);
+  const total = (sousTotal - reductionMontant + shipping).toFixed(2);
 
   // Simule les images du panier (à remplacer par les vraies images du client)
   const images = Array.from(
@@ -106,6 +110,54 @@ const PanierPage = () => {
     }
   };
 
+  const handleApplyPromo = async () => {
+    setPromoError("");
+    setPromoApplied(false);
+    setReduction(0);
+
+    try {
+      const res = await fetch("/api/checkPromo", {
+        // adapte l'URL à ton backend
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promo }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setReduction(data.reduction); // ex: 10 pour 10%
+        setPromoApplied(true);
+      } else {
+        setPromoError(data.error || "Code invalide");
+      }
+    } catch (e) {
+      setPromoError("Erreur serveur");
+    }
+  };
+
+  // date de livraison
+  const getDeliveryDate = () => {
+    const today = new Date();
+    today.setDate(today.getDate() + 5);
+
+    // Format en JJ/MM avec 0 devant si nécessaire
+    const day = String(today.getDate()).padStart(2, "0");
+    const monthNames = [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre",
+    ];
+    const month = monthNames[today.getMonth()];
+    return `${day} ${month}`;
+  };
   return (
     <>
       <Navbar />
@@ -259,30 +311,16 @@ const PanierPage = () => {
                               }}
                             >
                               <Box
+                                component="img"
+                                src={panierIMG}
+                                alt="Aperçu du panier"
                                 sx={{
-                                  display: "grid",
-                                  gridTemplateColumns: "repeat(3, 1fr)",
-                                  gridTemplateRows: "repeat(3, 1fr)",
                                   width: "100%",
                                   height: "100%",
-                                  gap: 0.5,
+                                  objectFit: "contain",
+                                  borderRadius: 1,
                                 }}
-                              >
-                                {images.map((img, i) => (
-                                  <Box
-                                    key={i}
-                                    component="img"
-                                    src={img}
-                                    alt={`Magnet ${i + 1}`}
-                                    sx={{
-                                      width: "100%",
-                                      height: "100%",
-                                      objectFit: "cover",
-                                      borderRadius: 0.5,
-                                    }}
-                                  />
-                                ))}
-                              </Box>
+                              />
                             </Box>
                             <Box>
                               <Typography
@@ -311,15 +349,6 @@ const PanierPage = () => {
                               >
                                 Magnets photo personnalisés 5 x 5 cm - Paquet de
                                 9
-                              </Typography>
-                              <Typography
-                                sx={{
-                                  color: "#888",
-                                  mt: 0.5,
-                                  fontSize: { xs: "0.6rem", sm: "0.7rem" },
-                                }}
-                              >
-                                04 juin, 15:38
                               </Typography>
                             </Box>
                           </Box>
@@ -455,6 +484,7 @@ const PanierPage = () => {
                               variant="contained"
                               size="small"
                               disabled={!promo || promoApplied}
+                              onClick={handleApplyPromo}
                               sx={{
                                 backgroundColor: "#bdbdbd",
                                 color: "#fff",
@@ -470,7 +500,6 @@ const PanierPage = () => {
                                 px: { xs: 0.5, sm: 1 },
                                 "&:hover": { backgroundColor: "#176B87" },
                               }}
-                              onClick={() => setPromoApplied(true)}
                             >
                               Appliquer
                             </Button>
@@ -532,7 +561,7 @@ const PanierPage = () => {
                         ml: 0.5,
                       }}
                     >
-                      Livraison 11 juin
+                      Livraison {getDeliveryDate()}
                     </Typography>
                   </Box>
                 </Box>
@@ -549,6 +578,23 @@ const PanierPage = () => {
                   <Typography>Total</Typography>
                   <Typography>{total} €</Typography>
                 </Box>
+                {reduction > 0 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "green",
+                    }}
+                  >
+                    <Typography>Réduction ({reduction}%)</Typography>
+                    <Typography>-{reductionMontant.toFixed(2)} €</Typography>
+                  </Box>
+                )}
+                {promoError && (
+                  <Typography sx={{ color: "red", fontSize: "0.8rem" }}>
+                    {promoError}
+                  </Typography>
+                )}
                 <Box
                   sx={{
                     display: "flex",
@@ -557,22 +603,7 @@ const PanierPage = () => {
                     flexDirection: { xs: "column", sm: "row" },
                   }}
                 >
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      flex: 1,
-                      borderColor: "#176B87",
-                      color: "#176B87",
-                      fontWeight: "bold",
-                      borderRadius: 1,
-                      textTransform: "none",
-                      py: 0.5,
-                      fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-                    }}
-                  >
-                    Continuer mes achats
-                  </Button>
+                  
                   <Button
                     variant="contained"
                     size="small"
