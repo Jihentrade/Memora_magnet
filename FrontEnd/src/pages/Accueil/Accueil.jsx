@@ -1,6 +1,6 @@
 import React from "react";
 import "./styleAccueil.css";
-import Couverture from "../../assets/Design.png";
+import Couverture from "../../assets/cov.png";
 import {
   Box,
   Button,
@@ -10,13 +10,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import customerImage1 from "../../assets/04c3a45650f5bca5ea9cf81b14d95591.jpg";
-import customerImage2 from "../../assets/3206fdb8f77aa3fffdcce5e0c70bb462.jpg";
-import customerImage3 from "../../assets/38c2892b5112b48e78dd79a1e07e570e.jpg";
+import customerImage1 from "../../assets/1.jpg";
+import customerImage2 from "../../assets/3.jpg";
+import customerImage3 from "../../assets/4.jpg";
 import customerImage4 from "../../assets/3b4e9e043cf72fe7b89c1d77459eaad3.jpg";
-import customerImage5 from "../../assets/68e4212ddedadf1effd504fc74cb42fe.jpg";
-import customerImage6 from "../../assets/7318ac8ac0271d776770ea0efeb176ad.jpg";
-import customerImage7 from "../../assets/7fdf205e09c58c79e5e0389ec26122ed.jpg";
+import customerImage5 from "../../assets/5.jpg";
+import customerImage6 from "../../assets/8.jpg";
+import customerImage7 from "../../assets/6.jpg";
 import customerImage8 from "../../assets/de7162838daa7d4d0030c502aa0333e2.jpg";
 import HowToWork from "../../components/HowItWorks";
 import ThreeByTwoGrid from "../../components/ThreeByTwoGrid/ThreeByTwoGrid";
@@ -66,8 +66,10 @@ const Accueil = () => {
             alt=""
             loading="lazy"
             style={{
-              objectFit: "cover",
+              // objectFit: "cover",
+             
               width: "100%",
+              height:"100%",
               maxHeight: isMobile ? "300px" : "600px",
             }}
           />
