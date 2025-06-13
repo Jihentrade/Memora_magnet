@@ -6,7 +6,6 @@ import Navbar from "../../components/Navbar/navbar";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/auth.slice";
-
 import Footer from "../../components/footer/footer";
 const Login = () => {
   const { role } = useSelector((state) => state.auth);
