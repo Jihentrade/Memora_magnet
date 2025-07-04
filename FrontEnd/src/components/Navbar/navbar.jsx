@@ -195,6 +195,7 @@ const Navbar = () => {
               </Button>
             ))}
             <IconButton
+            onClick={() => handleNavigation("/panier")}
               size="small"
               color="inherit"
               aria-label="shopping cart"

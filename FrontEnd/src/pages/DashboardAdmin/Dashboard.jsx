@@ -126,115 +126,60 @@ const Dashboard = () => {
     <>
       <Navbar />
       <div className="g-container">
+        <h1 className="dashboard-title">Tableau de Bord Admin</h1>
+        <p className="dashboard-subtitle">
+          Gérez vos produits, commandes et clients en un coup d'œil
+        </p>
+
         <div className="containerDash">
-          <div
-            className="card-stat"
-            style={{
-              borderBottom: "3px solid #176B87",
-            }}
-          >
-            <div
-              className="card-title-card-stat"
-              style={{ backgroundColor: "#176B87" }}
-            >
-              <img src={produit} alt="icon" width="20%" />
-              <label className="title-nl-style">Produit</label>
+          <div className="card-stat">
+            <div className="card-title-card-stat">
+              <img src={produit} alt="Produits" />
+              <label className="title-nl-style">Produits</label>
             </div>
-            <div className="nbr-nl-style">{totalProduit} Produit</div>
-            <a
-              className="btn-card-stat"
-              style={{ border: "1px solid #176B87" }}
-              onClick={handleProduitClick}
-            >
-              Acceder
-            </a>
-          </div>
-          <div
-            className="card-stat"
-            style={{ borderBottom: "3px solid #86B6F6" }}
-          >
-            <div
-              className="card-title-card-stat"
-              style={{ backgroundColor: "#86B6F6" }}
-            >
-              <img src={icondevis} alt="icon" width="20%" />
-              <label className="title-nl-style">Bon de livraison</label>
-            </div>
-            <div className="nbr-nl-style">{Bonlivraison} Bon livraison</div>
-            <a
-              className="btn-card-stat"
-              style={{ border: "1px solid #86B6F6" }}
-              onClick={handleLivraisonClick}
-            >
-              Acceder
-            </a>
+            <div className="nbr-nl-style">{totalProduit}</div>
+            <button className="btn-card-stat" onClick={handleProduitClick}>
+              Accéder aux Produits
+            </button>
           </div>
 
-          <div
-            className="card-stat"
-            style={{ borderBottom: "3px solid #83C0C1" }}
-          >
-            <div
-              className="card-title-card-stat"
-              style={{ backgroundColor: "#83C0C1" }}
-            >
-              <img src={commande} alt="icon" width="16%" />
-              <label className="title-nl-style">Commande</label>
+          <div className="card-stat">
+            <div className="card-title-card-stat">
+              <img src={icondevis} alt="Livraisons" />
+              <label className="title-nl-style">Bons de Livraison</label>
             </div>
-            <div className="nbr-nl-style">{totalCommandes} Commande</div>
-            <a
-              className="btn-card-stat"
-              style={{ border: "1px solid #83C0C1" }}
-              onClick={handleCommandeClick}
-            >
-              Acceder
-            </a>
+            <div className="nbr-nl-style">{Bonlivraison}</div>
+            <button className="btn-card-stat" onClick={handleLivraisonClick}>
+              Accéder aux Livraisons
+            </button>
           </div>
-          <div
-            className="card-stat"
-            style={{ borderBottom: "3px solid #79B4B7" }}
-          >
-            <div
-              className="card-title-card-stat"
-              style={{ backgroundColor: "#79B4B7" }}
-            >
-              <img src={clientIcon} alt="icon" width="20%" />
 
-              <label className="title-nl-style">Client</label>
+          <div className="card-stat">
+            <div className="card-title-card-stat">
+              <img src={commande} alt="Commandes" />
+              <label className="title-nl-style">Commandes</label>
             </div>
-            <div className="nbr-nl-style">{totalClients} Clients</div>
-            <a
-              className="btn-card-stat"
-              style={{ border: "1px solid #79B4B7" }}
-              onClick={handleClientClick}
-            >
-              Acceder
-            </a>
+            <div className="nbr-nl-style">{totalCommandes}</div>
+            <button className="btn-card-stat" onClick={handleCommandeClick}>
+              Accéder aux Commandes
+            </button>
+          </div>
+
+          <div className="card-stat">
+            <div className="card-title-card-stat">
+              <img src={clientIcon} alt="Clients" />
+              <label className="title-nl-style">Clients</label>
+            </div>
+            <div className="nbr-nl-style">{totalClients}</div>
+            <button className="btn-card-stat" onClick={handleClientClick}>
+              Accéder aux Clients
+            </button>
           </div>
         </div>
-        <div className="container" style={{ display: "flex" }}>
-          <div className="container" style={{ display: "block" }}>
-            {/* <div
-              className="card-stat"
-              style={{
-                borderBottom: "3px solid #6958ff",
-                // marginLeft: "-250px",
-                width: "950px",
-                marginTop: "-50px",
-                height: "480px",
-              }}
-            >
-              <Box
-                sx={{
-                  marginTop: "3px",
-                  width: "900px",
-                  // marginLeft: "-120px",
-                }}
-              >
-                <Chart />
-              </Box>
-            </div> */}
-          </div>
+
+        {/* Zone pour les graphiques futurs */}
+        <div className="chart-container" style={{ display: "none" }}>
+          {/* <Chart /> */}
         </div>
       </div>
       <Footer />

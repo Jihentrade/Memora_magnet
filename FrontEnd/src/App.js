@@ -6,20 +6,24 @@ import theme from "./styles/theme";
 import LoadingPage from "./components/Loading/loading";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { PersistGate } from "redux-persist/integration/react";
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from "react-helmet-async";
+import { Provider } from "react-redux";
+import Toast from "./components/Toast/Toast";
 
 function App() {
   const persistor = persistStore(store);
   return (
-    
-    <HelmetProvider store={store}>
-      <PersistGate loading={<LoadingPage />} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <RouterConfig />
-        </ThemeProvider>
-      </PersistGate>
-    </HelmetProvider>
+    <Provider store={store}>
+      <HelmetProvider store={store}>
+        <PersistGate loading={<LoadingPage />} persistor={persistor}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <RouterConfig />
+            <Toast />
+          </ThemeProvider>
+        </PersistGate>
+      </HelmetProvider>
+    </Provider>
   );
 }
 

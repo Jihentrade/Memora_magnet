@@ -1,15 +1,15 @@
 import React from "react";
 import "./styleAccueil.css";
-import Couverture from "../../assets/cov.png";
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  useTheme,
-  useMediaQuery,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar/navbar";
+import Footer from "../../components/footer/footer";
+import AboutUs from "../../components/AboutUs/aboutUs";
+import Service from "../../components/Serviice/Services";
+import HowToWork from "../../components/HowItWorks";
+import ThreeByTwoGrid from "../../components/ThreeByTwoGrid/ThreeByTwoGrid";
+
+// Import des images
+import Couverture from "../../assets/cov.png";
 import customerImage1 from "../../assets/1.jpg";
 import customerImage2 from "../../assets/3.jpg";
 import customerImage3 from "../../assets/4.jpg";
@@ -18,18 +18,10 @@ import customerImage5 from "../../assets/5.jpg";
 import customerImage6 from "../../assets/8.jpg";
 import customerImage7 from "../../assets/6.jpg";
 import customerImage8 from "../../assets/de7162838daa7d4d0030c502aa0333e2.jpg";
-import HowToWork from "../../components/HowItWorks";
-import ThreeByTwoGrid from "../../components/ThreeByTwoGrid/ThreeByTwoGrid";
-import Service from "../../components/Serviice/Services";
-import Footer from "../../components/footer/footer";
-import AboutUs from "../../components/AboutUs/aboutUs";
-import Navbar from "../../components/Navbar/navbar";
+import couverture from "../../assets/couverture.jpg";
 
 const Accueil = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
-
+  const navigate = useNavigate();
   const customerImages = [
     customerImage1,
     customerImage2,
@@ -40,7 +32,6 @@ const Accueil = () => {
     customerImage7,
     customerImage8,
   ];
-  const navigate = useNavigate();
 
   const handleButtonClick = () => {
     window.scrollTo(0, 0);
@@ -48,153 +39,199 @@ const Accueil = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <Navbar />
-      <div
-        className="container"
-        style={{ maxWidth: "100vw", overflowX: "hidden" }}
-      >
-        <Box
-          sx={{
-            backgroundColor: "white",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <img
-            src={Couverture}
-            alt=""
-            loading="lazy"
+
+      {/* Nouvelle section Hero avec image entière et bouton */}
+      <section className="hero-cover-section">
+        <img
+          src={couverture}
+          alt="Couverture Memora"
+          className="hero-cover-image"
+        />
+        <button className="hero-cover-btn" onClick={handleButtonClick}>
+          JE CRÉE
+        </button>
+      </section>
+
+      {/* Section Statistiques */}
+      <section className="stats-section">
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-number">50+</div>
+            <div className="stat-label">Clients Satisfaits</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">100+</div>
+            <div className="stat-label">Aimants Créés</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">72h</div>
+            <div className="stat-label">Livraison Rapide</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">100%</div>
+            <div className="stat-label">Qualité Garantie</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Produits Clients */}
+      <section className="products-section">
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <h2
             style={{
-              // objectFit: "cover",
-             
-              width: "100%",
-              height:"100%",
-              maxHeight: isMobile ? "300px" : "600px",
-            }}
-          />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              width: "100%",
-              padding: isMobile ? "20px" : "40px",
+              fontSize: "clamp(2rem, 4vw, 3rem)",
+              fontWeight: "700",
+              color: "var(--dark-color)",
+              marginBottom: "1rem",
             }}
           >
-            <div style={{ maxWidth: "800px", width: "100%" }}>
-              <Typography
-                variant={isMobile ? "h4" : "h2"}
-                sx={{
-                  color: "black",
-                  marginBottom: "5px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                }}
-              >
-                Aimants Photo Personnalisés de Haute Qualité
-              </Typography>
-              <Typography
-                sx={{
-                  marginTop: "10px",
-                  textAlign: "center",
-                  color: "#333",
-                  fontSize: isMobile ? "16px" : "18px",
-                  maxWidth: "500px",
-                  margin: "0 auto",
-                  padding: isMobile ? "0 20px" : "0",
-                }}
-              >
-                Chez Memora, nous nous engageons à vous offrir des produits de
-                qualité supérieure.
-                <br />
-                Nous utilisons les meilleurs matériaux et encres pour imprimer
-                des aimants photo personnalisés avec vos précieuses photos.
-              </Typography>
+            Nos Réalisations
+          </h2>
+          <p
+            style={{
+              fontSize: "1.1rem",
+              color: "#666",
+              maxWidth: "600px",
+              margin: "0 auto",
+            }}
+          >
+            Découvrez quelques-unes de nos créations d'aimants photo
+            personnalisés
+          </p>
+        </div>
+
+        <div className="products-grid">
+          {customerImages.map((image, index) => (
+            <div key={index} className="product-card">
+              <img
+                src={image}
+                alt={`Aimant personnalisé ${index + 1}`}
+                className="product-image"
+                loading="lazy"
+              />
             </div>
-            <Button
-              variant="contained"
-              onClick={handleButtonClick}
-              sx={{
-                marginTop: "20px",
-                backgroundColor: "#597E52",
-                color: "white",
-                padding: isMobile ? "8px 16px" : "12px 24px",
-                fontSize: isMobile ? "14px" : "16px",
-                "&:hover": {
-                  backgroundColor: "#597E52",
-                },
-                "&:focus": {
-                  backgroundColor: "#597E52",
-                },
-                "&:active": {
-                  backgroundColor: "#597E52",
-                },
+          ))}
+        </div>
+      </section>
+
+      {/* Section Services */}
+      <section className="services-section">
+        <div className="services-container">
+          <h2 className="services-title">Pourquoi Choisir Memora ?</h2>
+          <div className="services-grid">
+            <div className="service-card">
+              <div className="service-icon">🎨</div>
+              <h3 className="service-title">Qualité Premium</h3>
+              <p className="service-description">
+                Nous utilisons des matériaux de première qualité et des encres
+                résistantes aux UV pour garantir la durabilité de vos aimants.
+              </p>
+            </div>
+
+            <div className="service-card">
+              <div className="service-icon">⚡</div>
+              <h3 className="service-title">Livraison Rapide</h3>
+              <p className="service-description">
+                Recevez vos aimants personnalisés en 24-48h. Nous traitons
+                chaque commande avec soin et rapidité.
+              </p>
+            </div>
+
+            <div className="service-card">
+              <div className="service-icon">💎</div>
+              <h3 className="service-title">Personnalisation Totale</h3>
+              <p className="service-description">
+                Choisissez la taille, la forme et le style de vos aimants.
+                Chaque création est unique et adaptée à vos besoins.
+              </p>
+            </div>
+
+            <div className="service-card">
+              <div className="service-icon">🛡️</div>
+              <h3 className="service-title">Garantie Satisfaction</h3>
+              <p className="service-description">
+                Si vous n'êtes pas satisfait, nous refaisons vos aimants
+                gratuitement. Votre satisfaction est notre priorité.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Comment ça marche */}
+      <section style={{ padding: "80px 20px", background: "white" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <h2
+              style={{
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                fontWeight: "700",
+                color: "var(--dark-color)",
+                marginBottom: "1rem",
               }}
             >
-              SÉLECTIONNER DES PHOTOS
-            </Button>
-
-            <Box sx={{ width: "100%", mt: 4 }}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  textAlign: "center",
-                  fontSize: isMobile ? "20px" : "24px",
-                }}
-              >
-                Photos de produits clients
-              </Typography>
-              <Grid
-                container
-                spacing={isMobile ? 1 : 2}
-                justifyContent="center"
-                sx={{ px: isMobile ? 1 : 2 }}
-              >
-                {customerImages.map((image, index) => (
-                  <Grid
-                    item
-                    xs={6}
-                    sm={4}
-                    md={3}
-                    key={index}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <img
-                      src={image}
-                      alt={`Image client ${index}`}
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        maxWidth: "380px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-            <Box sx={{ width: "100%", mt: isMobile ? "40px" : "70px" }}>
-              <HowToWork />
-            </Box>
-            <Box sx={{ width: "100%", mt: isMobile ? "40px" : "70px" }}>
-              <ThreeByTwoGrid />
-            </Box>
+              Comment ça marche ?
+            </h2>
+            <p
+              style={{
+                fontSize: "1.1rem",
+                color: "#666",
+                maxWidth: "600px",
+                margin: "0 auto",
+              }}
+            >
+              En 3 étapes simples, transformez vos photos en aimants magnifiques
+            </p>
           </div>
-        </Box>
-        <Box sx={{ mt: isMobile ? "40px" : "70px" }}>
-          <AboutUs />
-          <Service />
-          <Footer />
-        </Box>
-      </div>
+          <HowToWork />
+        </div>
+      </section>
+
+      {/* Section À propos */}
+      <section className="about-section">
+        <div className="about-container">
+          <div className="about-content">
+            <h2>À Propos de Memora</h2>
+            <p>
+              Depuis plus de 5 ans, Memora s'est spécialisée dans la création
+              d'aimants photo personnalisés de haute qualité. Notre passion est
+              de transformer vos précieux souvenirs en objets durables et
+              esthétiques.
+            </p>
+            <p>
+              Nous utilisons les dernières technologies d'impression et des
+              matériaux premium pour garantir que vos aimants résistent au temps
+              et conservent leurs couleurs éclatantes.
+            </p>
+            <button className="modern-button" onClick={handleButtonClick}>
+              Commencer Maintenant →
+            </button>
+          </div>
+          <div>
+            <img
+              src={customerImage1}
+              alt="Aimants Memora"
+              className="about-image"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section Grille de produits */}
+      <section
+        style={{ padding: "80px 20px", background: "var(--light-color)" }}
+      >
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <ThreeByTwoGrid />
+        </div>
+      </section>
+
+      {/* Composants existants */}
+      <AboutUs />
+      <Service />
+      <Footer />
     </div>
   );
 };

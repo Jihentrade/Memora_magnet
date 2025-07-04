@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import Navbar from "../Navbar";
 import Footer from "../footer/footer";
-import image from "../../assets/Couverture .png";
+import image from "../../assets/cov.png";
 import { motion } from "framer-motion";
 
 const MotionBox = motion.div;

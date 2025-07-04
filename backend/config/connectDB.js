@@ -2,14 +2,16 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
+    // Vérifier si l'URL MongoDB est définie
+
     await mongoose.connect(process.env.MONGO_URL, {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
       // useCreateIndex: true,
     });
-    console.log("the database is connected ..");
+    console.log("✅ La base de données MongoDB est connectée sur:", mongoUrl);
   } catch (error) {
-    console.log("ERROR DB CONNECTION");
+    console.log("❌ ERREUR DE CONNEXION À LA BASE DE DONNÉES:");
   }
 };
 

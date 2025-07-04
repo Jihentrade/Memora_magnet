@@ -1,6 +1,6 @@
-const CodeReduction = require('./models/CodeReduction'); // adapte le chemin
-
-app.post('/createCommande', async (req, res) => {
+const CodeReduction = require("../models/codeReduction"); // adapte le chemin
+const route = require("express").Router();
+route.post("/createCommande", async (req, res) => {
   const { promo } = req.body;
   let reduction = 0;
 
@@ -12,5 +12,6 @@ app.post('/createCommande', async (req, res) => {
       return res.status(400).json({ error: "Code de réduction invalide" });
     }
   }
-
 });
+
+module.exports = route;
