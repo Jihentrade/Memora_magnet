@@ -9,7 +9,6 @@ import HowToWork from "../../components/HowItWorks";
 import ThreeByTwoGrid from "../../components/ThreeByTwoGrid/ThreeByTwoGrid";
 
 // Import des images
-import Couverture from "../../assets/cov.png";
 import customerImage1 from "../../assets/1.jpg";
 import customerImage2 from "../../assets/3.jpg";
 import customerImage3 from "../../assets/4.jpg";

@@ -56,6 +56,7 @@ const AboutUs = () => {
             <Grid item xs={12} md={6}>
               <MotionBox variants={itemVariants}>
                 <Box
+                  className="about-section"
                   sx={{
                     p: { xs: 2, sm: 3, md: 4 },
                     height: "100%",
@@ -88,11 +89,12 @@ const AboutUs = () => {
                       lineHeight: 1.6,
                     }}
                   >
-                    Nous sommes une sœur et un frère, tous deux jeunes et passionnés par
-                    la création. Originaires de Tunisie, nous avons uni nos forces pour
-                    réaliser notre projet : Custom Photo Magnets. Notre objectif est de
-                    proposer des aimants photo personnalisés de haute qualité, conçus avec
-                    soin pour capturer vos moments les plus précieux et les transformer en
+                    Nous sommes une sœur et un frère, tous deux jeunes et
+                    passionnés par la création. Originaires de Tunisie, nous
+                    avons uni nos forces pour réaliser notre projet : Custom
+                    Photo Magnets. Notre objectif est de proposer des aimants
+                    photo personnalisés de haute qualité, conçus avec soin pour
+                    capturer vos moments les plus précieux et les transformer en
                     souvenirs durables.
                   </Typography>
                 </Box>
@@ -134,11 +136,12 @@ const AboutUs = () => {
                       lineHeight: 1.6,
                     }}
                   >
-                    لتحقيق مشروعنا: Custom Photo Magnets. هدفنا هو تقديم مغناطيسات صور
-                    مخصصة عالية الجودة، مصممة بعناية لالتقاط أروع لحظاتك وتحويلها إلى
-                    ذكريات دائمة. بإبداعنا وتفانينا واهتمامنا بالتفاصيل، نسعى لتقديم
-                    منتجات فريدة تضيف لمسة خاصة إلى حياتك اليومية. مرحبًا بكم في Custom
-                    Photo Magnets، حيث تحكي كل مغناطيس قصة.
+                    لتحقيق مشروعنا: Custom Photo Magnets. هدفنا هو تقديم
+                    مغناطيسات صور مخصصة عالية الجودة، مصممة بعناية لالتقاط أروع
+                    لحظاتك وتحويلها إلى ذكريات دائمة. بإبداعنا وتفانينا
+                    واهتمامنا بالتفاصيل، نسعى لتقديم منتجات فريدة تضيف لمسة خاصة
+                    إلى حياتك اليومية. مرحبًا بكم في Custom Photo Magnets، حيث
+                    تحكي كل مغناطيس قصة.
                   </Typography>
                 </Box>
               </MotionBox>
