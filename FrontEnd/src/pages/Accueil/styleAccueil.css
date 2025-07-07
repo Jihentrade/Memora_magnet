@@ -451,7 +451,23 @@ body {
   }
 
   .services-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+
+  .service-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 24px 12px !important;
+    margin: 0 auto;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .service-title,
+  .service-description {
+    width: 100%;
+    text-align: center;
+    word-break: break-word;
   }
 
   .products-grid {
@@ -500,6 +516,15 @@ body {
   .modern-button {
     margin-top: 0.5rem;
   }
+  .service-title {
+    font-size: 1.25rem;
+  }
+  .service-description {
+    font-size: 1.05rem;
+  }
+  .service-icon {
+    font-size: 2.2rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -529,6 +554,18 @@ body {
   }
   .modern-button {
     margin-top: 0.3rem;
+  }
+  .service-title {
+    font-size: 1.1rem;
+  }
+  .service-description {
+    font-size: 0.98rem;
+  }
+  .service-icon {
+    font-size: 2rem;
+  }
+  .service-card {
+    padding: 18px 4px !important;
   }
 }
 
