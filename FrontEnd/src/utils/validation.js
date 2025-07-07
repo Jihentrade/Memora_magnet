@@ -144,24 +144,16 @@ export const MdpsValidation = Yup.object({
 /*********************************************************************** */
 export const AjoutClientValidation = Yup.object({
   name: Yup.string().required("Le nom est requis"),
-  prenom: Yup.string().required("Le prenom est requis"),
-
-  numero: Yup.number()
-    .integer("Le numéro de téléphone n est pas valide")
-    .required("Le numéro de téléphone est requis")
-    .typeError("Le numéro de téléphone doit être un entier")
-    .test(
-      "len",
-      "Le numéro de téléphone doit être composé de 8 chiffres",
-      (val) => val && val.toString().length === 8
-    ),
-  adresse: Yup.string().required("Le champ adresse est obligatoire"),
+  lastname: Yup.string().required("Le prénom est requis"),
+  phone: Yup.string()
+    .matches(
+      /^[0-9]{8}$/,
+      "Le numéro de téléphone doit être composé de 8 chiffres"
+    )
+    .required("Le numéro de téléphone est requis"),
+  address: Yup.string().required("Le champ adresse est obligatoire"),
   email: Yup.string()
     .email("L'adresse email n'est pas valide")
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/,
-      "L'adresse email n'est pas valide"
-    )
     .required("L'adresse email est obligatoire"),
   password: Yup.string().required("Le mot de passe est requis"),
 });

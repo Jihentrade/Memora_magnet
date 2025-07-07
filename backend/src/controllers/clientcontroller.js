@@ -2,16 +2,15 @@ const clientService = require("../services/clientservices");
 const clientModel = require("../models/clientmodel");
 //Creation d'un client
 const createClient = async (req, res) => {
-  const { name, lastname, phone, cin, email, address, fisc } = req.body;
+  const { name, lastname, phone,  email, addresse} = req.body;
 
   const newClient = {
     name,
     lastname,
+    password,
     phone,
-    cin,
     email,
-    address,
-    fisc,
+    addresse,
   };
 
   const client = await clientService.createClient(newClient);

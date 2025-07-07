@@ -121,17 +121,7 @@ const Navbar = () => {
                   sx={{ fontSize: { xs: "1.5rem", sm: "1.75rem" } }}
                 />
               </IconButton>
-              <IconButton
-                onClick={() => handleNavigation("/login")}
-                size="small"
-                color="inherit"
-                aria-label="account"
-                sx={{ color: "#000000", padding: "4px" }}
-              >
-                <AccountCircleIcon
-                  sx={{ fontSize: { xs: "1.5rem", sm: "1.75rem" } }}
-                />
-              </IconButton>
+             
               <IconButton
                 size="small"
                 edge="end"

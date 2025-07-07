@@ -17,10 +17,13 @@ const userSchema = Schema({
       return `${year}-${month}${this.incrementValue}`;
     },
   },
-  modePayement: { type: String, required: false },
   montantTotal: { type: Number, required: true },
   dateCommande: { type: Date, default: Date.now },
-  image: [{ type: String, required: true }],
+  images: {
+    type: [String], // tableau de chaînes de caractères (URL ou chemins d’accès)
+    required: true,
+    validate: [(val) => val.length > 8, 'Au moins une image est requise'],
+  },
 });
 
 module.exports = mongoose.model("commandemodel", userSchema);

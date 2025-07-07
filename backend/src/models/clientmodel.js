@@ -10,31 +10,21 @@ const userSchema = Schema({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
   phone: {
     type: Number,
     unique: false,
   },
-  cin: {
+  email: {
     type: String,
-    required: false,
+    required: true,
   },
   address: {
-    rue: {
-      type: String,
-      required: false,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    postalCode: {
-      type: Number,
-      required: false,
-    },
-  },
-  fisc: {
     type: String,
-    required: false,
+    required: true,
   },
 });
 

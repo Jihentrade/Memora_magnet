@@ -29,6 +29,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/footer";
 import panierIMG from "../../../src/assets/PAP_810.png";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 const PanierPage = () => {
   // Données fictives pour l'exemple
   const [quantity, setQuantity] = useState(1);
@@ -46,6 +49,8 @@ const PanierPage = () => {
   const [errors, setErrors] = useState({});
   const [reduction, setReduction] = useState(0); // en pourcentage
   const [promoError, setPromoError] = useState(""); // message d'erreur
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const price = 12.49;
@@ -59,6 +64,10 @@ const PanierPage = () => {
     { length: 9 },
     (_, i) => `/images/magnet${i + 1}.jpg`
   );
+
+  const auth = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Validation simple des champs
   const validateFields = () => {
@@ -78,36 +87,19 @@ const PanierPage = () => {
     setClientInfo({ ...clientInfo, [e.target.name]: e.target.value });
   };
 
-  const handleValidate = async () => {
-    if (!validateFields()) {
-      return;
-    }
-    setLoading(true);
-    try {
-      // Simule l'envoi au backend
-      const res = await fetch("/createCommande", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          images,
-          quantity,
-          price,
-          shipping,
-          total,
-          promo: promoApplied ? promo : null,
-          client: clientInfo,
-        }),
-      });
-      if (res.ok) {
-        setSuccess(true);
-        setOpenModal(false);
-        // Rediriger ou afficher un message de succès ici
-      }
-    } catch (e) {
-      // Gérer l'erreur
-    } finally {
-      setLoading(false);
-    }
+  const handleValidate = () => {
+    if (!validateFields()) return;
+
+    const message = `\n Nouvelle commande Memora :\nNom : ${
+      clientInfo.nom
+    }\nPrénom : ${clientInfo.prenom}\nNuméro : ${
+      clientInfo.numero
+    }\nAdresse : ${clientInfo.adresse}\n\nImages :\n${images
+      .map((img, i) => `Image ${i + 1} : ${window.location.origin}${img}`)
+      .join("\n")}`;
+    const encodedMsg = encodeURIComponent(message);
+    window.open(`https://wa.me/21699616660?text=${encodedMsg}`, "_blank");
+    setOpenModal(false);
   };
 
   const handleApplyPromo = async () => {
@@ -158,6 +150,15 @@ const PanierPage = () => {
     const month = monthNames[today.getMonth()];
     return `${day} ${month}`;
   };
+
+  const handleValiderPanier = () => {
+    if (!auth.user) {
+      setShowAuthModal(true);
+    } else {
+      setShowConfirm(true);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -603,222 +604,141 @@ const PanierPage = () => {
                     flexDirection: { xs: "column", sm: "row" },
                   }}
                 >
-                  
                   <Button
                     variant="contained"
-                    size="small"
-                    sx={{
-                      flex: 1,
-                      backgroundColor: "#176B87",
-                      color: "#fff",
-                      fontWeight: "bold",
-                      borderRadius: 1,
-                      textTransform: "none",
-                      py: 0.5,
-                      fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-                      "&:hover": { backgroundColor: "#145C73" },
-                    }}
-                    onClick={handleOpenModal}
-                    disabled={loading}
+                    color="primary"
+                    onClick={() => setOpenModal(true)}
                   >
-                    {loading ? "Validation..." : "Valider mon panier"}
+                    Valider mon panier
                   </Button>
                 </Box>
-                {success && (
-                  <Typography
-                    sx={{
-                      color: "green",
-                      mt: 0.5,
-                      textAlign: "center",
-                      fontWeight: "bold",
-                      fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-                    }}
-                  >
-                    Commande validée avec succès !
-                  </Typography>
-                )}
               </Paper>
             </Box>
           </section>
         </Box>
       </main>
       <Footer />
-      <Dialog
-        open={openModal}
-        onClose={handleCloseModal}
-        maxWidth="xs"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: { xs: 1, sm: 2, md: 4 },
-            m: { xs: 0.5, sm: 1, md: 2 },
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            fontWeight: "bold",
-            color: "#176B87",
-            fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
-            px: { xs: 1, sm: 1.5, md: 2 },
-            py: { xs: 1, sm: 1.5, md: 2 },
-          }}
-        >
-          Informations client
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: { xs: 0.5, sm: 1, md: 1.5 },
-            mt: 0.5,
-            px: { xs: 1, sm: 1.5, md: 2 },
-          }}
-        >
-          <FormControl error={!!errors.nom} fullWidth size="small">
-            <InputLabel
-              htmlFor="nom"
-              sx={{
-                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-              }}
-            >
-              Nom
-            </InputLabel>
-            <OutlinedInput
-              id="nom"
-              name="nom"
-              label="Nom"
-              value={clientInfo.nom}
-              onChange={handleClientInfoChange}
-              autoComplete="family-name"
-              sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" } }}
-            />
-            {errors.nom && (
-              <FormHelperText
-                sx={{
-                  fontSize: { xs: "0.6rem", sm: "0.7rem", md: "0.875rem" },
-                }}
-              >
-                {errors.nom}
-              </FormHelperText>
-            )}
-          </FormControl>
-          <FormControl error={!!errors.prenom} fullWidth size="small">
-            <InputLabel
-              htmlFor="prenom"
-              sx={{
-                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-              }}
-            >
-              Prénom
-            </InputLabel>
-            <OutlinedInput
-              id="prenom"
-              name="prenom"
-              label="Prénom"
-              value={clientInfo.prenom}
-              onChange={handleClientInfoChange}
-              autoComplete="given-name"
-              sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" } }}
-            />
-            {errors.prenom && (
-              <FormHelperText
-                sx={{
-                  fontSize: { xs: "0.6rem", sm: "0.7rem", md: "0.875rem" },
-                }}
-              >
-                {errors.prenom}
-              </FormHelperText>
-            )}
-          </FormControl>
-          <FormControl error={!!errors.numero} fullWidth size="small">
-            <InputLabel
-              htmlFor="numero"
-              sx={{
-                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-              }}
-            >
-              Numéro de téléphone
-            </InputLabel>
-            <OutlinedInput
-              id="numero"
-              name="numero"
-              label="Numéro de téléphone"
-              value={clientInfo.numero}
-              onChange={handleClientInfoChange}
-              autoComplete="tel"
-              sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" } }}
-            />
-            {errors.numero && (
-              <FormHelperText
-                sx={{
-                  fontSize: { xs: "0.6rem", sm: "0.7rem", md: "0.875rem" },
-                }}
-              >
-                {errors.numero}
-              </FormHelperText>
-            )}
-          </FormControl>
-          <FormControl error={!!errors.adresse} fullWidth size="small">
-            <InputLabel
-              htmlFor="adresse"
-              sx={{
-                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-              }}
-            >
-              Adresse
-            </InputLabel>
-            <OutlinedInput
-              id="adresse"
-              name="adresse"
-              label="Adresse"
-              value={clientInfo.adresse}
-              onChange={handleClientInfoChange}
-              autoComplete="street-address"
-              multiline
-              minRows={2}
-              sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" } }}
-            />
-            {errors.adresse && (
-              <FormHelperText
-                sx={{
-                  fontSize: { xs: "0.6rem", sm: "0.7rem", md: "0.875rem" },
-                }}
-              >
-                {errors.adresse}
-              </FormHelperText>
-            )}
-          </FormControl>
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Informations client</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Nom"
+            name="nom"
+            value={clientInfo.nom}
+            onChange={handleClientInfoChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.nom}
+            helperText={errors.nom}
+          />
+          <TextField
+            label="Prénom"
+            name="prenom"
+            value={clientInfo.prenom}
+            onChange={handleClientInfoChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.prenom}
+            helperText={errors.prenom}
+          />
+          <TextField
+            label="Numéro"
+            name="numero"
+            value={clientInfo.numero}
+            onChange={handleClientInfoChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.numero}
+            helperText={errors.numero}
+          />
+          <TextField
+            label="Adresse"
+            name="adresse"
+            value={clientInfo.adresse}
+            onChange={handleClientInfoChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.adresse}
+            helperText={errors.adresse}
+          />
         </DialogContent>
-        <DialogActions
-          sx={{
-            px: { xs: 1, sm: 1.5, md: 2 },
-            py: { xs: 0.5, sm: 1, md: 1.5 },
-          }}
-        >
-          <Button
-            onClick={handleCloseModal}
-            color="inherit"
-            size="small"
-            sx={{
-              fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
-            }}
-          >
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="secondary">
+            Annuler
+          </Button>
+          <Button onClick={handleValidate} color="primary" variant="contained">
+            Envoyer sur WhatsApp
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Modal de confirmation */}
+      <Dialog open={showConfirm} onClose={() => setShowConfirm(false)}>
+        <DialogTitle>Confirmer la commande</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Voulez-vous vraiment confirmer votre commande ?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowConfirm(false)} color="secondary">
             Annuler
           </Button>
           <Button
-            onClick={handleValidate}
-            variant="contained"
-            size="small"
-            sx={{
-              backgroundColor: "#176B87",
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: { xs: "0.7rem", sm: "0.8rem", md: "1rem" },
+            onClick={async () => {
+              setShowConfirm(false);
+              await handleValidate();
+              setShowSuccess(true);
             }}
+            color="primary"
+            variant="contained"
             disabled={loading}
           >
-            {loading ? "Validation..." : "Confirmer la commande"}
+            Confirmer
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Modal de succès */}
+      <Dialog open={showSuccess} onClose={() => setShowSuccess(false)}>
+        <DialogTitle>Commande validée !</DialogTitle>
+        <DialogContent>
+          <Typography>Votre commande a bien été enregistrée.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowSuccess(false)}
+            color="primary"
+            autoFocus
+          >
+            Fermer
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Modal d'authentification */}
+      <Dialog open={showAuthModal} onClose={() => setShowAuthModal(false)}>
+        <DialogTitle>Connexion requise</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Vous devez avoir un compte pour valider votre commande.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setShowAuthModal(false);
+              navigate("/login");
+            }}
+            color="primary"
+          >
+            Se connecter
+          </Button>
+          <Button
+            onClick={() => {
+              setShowAuthModal(false);
+              navigate("/register");
+            }}
+            color="secondary"
+          >
+            S'inscrire
           </Button>
         </DialogActions>
       </Dialog>
