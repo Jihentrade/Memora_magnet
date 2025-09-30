@@ -5,7 +5,7 @@ const isVercel = process.env.VERCEL === "1";
 // URL du backend selon l'environnement
 export const BASE_URL =
   isProduction || isVercel
-    ? "http://memoramagnetbackend.vercel.app/" // Remplacez par votre URL de backend déployé
+    ? "https://memoramagnetbackend.vercel.app/"
     : "http://localhost:4001/";
 
 export const authAPI = {
