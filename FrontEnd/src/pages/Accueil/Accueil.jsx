@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./styleAccueil.css";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/navbar";
@@ -21,6 +21,7 @@ import couverture from "../../assets/couverture.jpg";
 
 const Accueil = () => {
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
   const customerImages = [
     customerImage1,
     customerImage2,
@@ -31,6 +32,10 @@ const Accueil = () => {
     customerImage7,
     customerImage8,
   ];
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const handleButtonClick = () => {
     window.scrollTo(0, 0);
@@ -48,6 +53,9 @@ const Accueil = () => {
           alt="Couverture Memora"
           className="hero-cover-image"
         />
+        <div className="hero-overlay">
+          <div className={`hero-content ${isVisible ? "fade-in" : ""}`}></div>
+        </div>
         <button className="hero-cover-btn" onClick={handleButtonClick}>
           JE CRÉE
         </button>
@@ -101,13 +109,13 @@ const Accueil = () => {
           </p>
         </div>
 
-        <div className="products-grid">
+        <div className="realisations-grid">
           {customerImages.map((image, index) => (
-            <div key={index} className="product-card">
+            <div key={index} className="realisation-item">
               <img
                 src={image}
                 alt={`Aimant personnalisé ${index + 1}`}
-                className="product-image"
+                className="realisation-image"
                 loading="lazy"
               />
             </div>

@@ -1,65 +1,78 @@
 const commandeService = require("../services/commandeservices");
 const CommandeModel = require("../models/commandemodel");
-//Creation d'une commande
+const { uploadMultiple } = require("../middlewares/upload");
+//Creation d'une commande avec upload d'images
 const createCommande = async (req, res) => {
-  try {
-    const {
-      client,
-
-      montantTotal,
-      modePayement,
-
-      image,
-    } = req.body;
-
-    // Récupérer la dernière commande de la base de données pour déterminer le numéro de commande suivant
-    const lastCommande = await CommandeModel.findOne(
-      {},
-      {},
-      { sort: { number: -1 } }
-    );
-
-    let nextNumber = 1;
-    const now = new Date();
-    const year = now.getFullYear();
-    let month = (now.getMonth() + 1).toString().padStart(2, "0");
-
-    if (
-      lastCommande &&
-      lastCommande.dateCommande.getMonth() === now.getMonth() &&
-      lastCommande.dateCommande.getFullYear() === year
-    ) {
-      nextNumber = lastCommande.number + 1;
+  uploadMultiple(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({
+        message: "Erreur lors de l'upload des images",
+        error: err.message,
+      });
     }
 
-    const numeroCommande = `${year}-${month}${nextNumber
-      .toString()
-      .padStart(2, "0")}`;
+    try {
+      // Exiger un client existant fourni par le frontend
+      const clientId = req.body.client;
+      if (!clientId || clientId === "null") {
+        return res.status(400).json({
+          message: "Client requis pour créer la commande",
+        });
+      }
 
-    const newCommande = new CommandeModel({
-      number: nextNumber,
-      client,
-      numeroCommande,
-      modePayement,
-      montantTotal,
-      dateCommande: now,
-      image,
-    });
+      // Images optionnelles
+      const imagePaths = req.files ? req.files.map((file) => file.path) : [];
 
-    // Enregistrer la nouvelle commande dans la base de données
-    const savedCommande = await newCommande.save();
+      const lastCommande = await CommandeModel.findOne(
+        {},
+        {},
+        { sort: { number: -1 } }
+      );
 
-    res.status(201).json({
-      message: "Commande créée avec succès",
-      data: savedCommande,
-    });
-  } catch (error) {
-    console.error("Erreur lors de la création de la commande:", error);
-    res.status(500).json({
-      message: "Erreur lors de la création de la commande",
-      error: error.message,
-    });
-  }
+      let nextNumber = 1;
+      const now = new Date();
+      const year = now.getFullYear();
+      let month = (now.getMonth() + 1).toString().padStart(2, "0");
+
+      if (
+        lastCommande &&
+        lastCommande.dateCommande.getMonth() === now.getMonth() &&
+        lastCommande.dateCommande.getFullYear() === year
+      ) {
+        nextNumber = lastCommande.number + 1;
+      }
+
+      const numeroCommande = `${year}-${month}${nextNumber
+        .toString()
+        .padStart(2, "0")}`;
+
+      const newCommande = new CommandeModel({
+        number: nextNumber,
+        client: clientId,
+        numeroCommande,
+        dateCommande: now,
+        images: imagePaths,
+        // Champs optionnels
+        montantTotal: req.body.montantTotal
+          ? parseFloat(req.body.montantTotal)
+          : 0,
+        modePayement: req.body.modePayement || "en_attente",
+      });
+
+      const savedCommande = await newCommande.save();
+
+      res.status(201).json({
+        message: "Commande créée avec succès",
+        data: savedCommande,
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création de la commande:", error);
+      res.status(500).json({
+        message: "Erreur lors de la création de la commande",
+        error: error.message,
+      });
+    }
+  });
 };
 
 //************************************************* */

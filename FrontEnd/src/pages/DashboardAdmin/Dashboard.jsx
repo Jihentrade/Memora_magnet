@@ -51,7 +51,7 @@ const Dashboard = () => {
   };
   //vers la page commande
   const handleCommandeClick = () => {
-    navigate("/commande");
+    navigate("/commandes");
   };
   const handleLivraisonClick = () => {
     navigate("/livraison");

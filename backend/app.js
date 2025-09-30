@@ -12,7 +12,7 @@ const cron = require("node-cron");
 
 require("dotenv").config({ path: "./config/.env" });
 // view engine setup
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "pug");
 
 app.use(logger("dev"));
@@ -20,6 +20,7 @@ app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
@@ -29,7 +30,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: ["http://localhost:3000", "http://localhost:3001"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -53,8 +54,8 @@ app.use("/auth", authRouter);
 //**************************************************************************** */
 
 //1-START THE SERVER
-app.listen(4000, function () {
-  console.log("Running on http://127.0.0.1:4000");
+app.listen(4001, function () {
+  console.log("Running on http://127.0.0.1:4001");
 });
 
 module.exports = app;

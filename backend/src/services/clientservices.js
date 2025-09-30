@@ -44,8 +44,8 @@ const updateClient = async (id, client) => {
 };
 //*************************************************************************** */
 
-async function sendDeviss(name, email, photo, message) {
-  await sendDevis(name, email, photo, message);
+async function sendDeviss(name,  photo, message) {
+  await sendDevis(name,  photo, message);
 }
 
 //*********************************************************************** */

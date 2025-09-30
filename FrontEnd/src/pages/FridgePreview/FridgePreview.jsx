@@ -213,7 +213,15 @@ const FridgePreview = () => {
           <Divider sx={{ width: "100%", my: 2 }} />
           <Button
             variant="contained"
-            onClick={() => navigate("/panier")}
+            onClick={() => {
+              // Passer les images au panier si elles existent
+              if (images && images.length > 0) {
+                const imagesString = JSON.stringify(images);
+                navigate(`/panier?images=${encodeURIComponent(imagesString)}`);
+              } else {
+                navigate("/panier");
+              }
+            }}
             sx={{
               background: "linear-gradient(90deg, #176B87 0%, #64b5f6 100%)",
               color: "white",

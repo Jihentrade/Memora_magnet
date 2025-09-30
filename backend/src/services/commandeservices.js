@@ -1,4 +1,5 @@
 const commandeModel = require("../models/commandemodel");
+const clientModel = require("../models/clientmodel");
 //*********************************************************** */
 const createCommande = async (commandeData) => {
   const commande = new commandeModel(commandeData);
@@ -6,15 +7,19 @@ const createCommande = async (commandeData) => {
   return result;
 };
 //*************************************************************************** */
-//find All commande
+//find All commande avec informations client
 async function findAll() {
-  const commandes = await commandeModel.find();
+  const commandes = await commandeModel
+    .find()
+    .populate("client", "nom prenom email telephone adresse");
   return commandes;
 }
 //*************************************************************************** */
 
 const searchCommande = async (id) => {
-  const commandes = await commandeModel.findOne({ _id: id });
+  const commandes = await commandeModel
+    .findOne({ _id: id })
+    .populate("client", "nom prenom email telephone adresse");
 
   return commandes;
 };

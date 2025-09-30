@@ -19,10 +19,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  FormHelperText,
+  CircularProgress,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -30,16 +29,46 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/footer";
 import panierIMG from "../../../src/assets/PAP_810.png";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { createCommande } from "../../services/commande.services";
+import { createClient } from "../../services/client.services";
 
 const PanierPage = () => {
+  const location = useLocation();
+  const imagesString = new URLSearchParams(location.search).get("images");
+
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  useEffect(() => {
+    // Vérifier s'il y a des images dans l'URL (optionnel)
+    if (imagesString) {
+      try {
+        const parsedImages = JSON.parse(decodeURIComponent(imagesString));
+        if (Array.isArray(parsedImages) && parsedImages.length > 0) {
+          setSelectedImages(parsedImages);
+          console.log("Images chargées depuis l'URL:", parsedImages.length);
+        }
+      } catch (error) {
+        console.error("Erreur lors du parsing des images:", error);
+        setSelectedImages([]);
+      }
+    } else {
+      // Pas d'images dans l'URL, panier vide par défaut
+      setSelectedImages([]);
+    }
+  }, [imagesString]);
+
   // Données fictives pour l'exemple
   const [quantity, setQuantity] = useState(1);
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [clientInfo, setClientInfo] = useState({
     nom: "",
     prenom: "",
@@ -47,23 +76,16 @@ const PanierPage = () => {
     adresse: "",
   });
   const [errors, setErrors] = useState({});
-  const [reduction, setReduction] = useState(0); // en pourcentage
-  const [promoError, setPromoError] = useState(""); // message d'erreur
+  const [reduction, setReduction] = useState(0);
+  const [promoError, setPromoError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const price = 12.49;
-  const shipping = 5.99;
+  const price = 45;
+  const shipping = 7;
   const sousTotal = price * quantity;
   const reductionMontant = sousTotal * (reduction / 100);
   const total = (sousTotal - reductionMontant + shipping).toFixed(2);
-
-  // Simule les images du panier (à remplacer par les vraies images du client)
-  const images = Array.from(
-    { length: 9 },
-    (_, i) => `/images/magnet${i + 1}.jpg`
-  );
 
   const auth = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -72,34 +94,77 @@ const PanierPage = () => {
   // Validation simple des champs
   const validateFields = () => {
     const newErrors = {};
-    if (!clientInfo.nom.trim()) newErrors.nom = "Le nom est requis";
-    if (!clientInfo.prenom.trim()) newErrors.prenom = "Le prénom est requis";
-    if (!clientInfo.numero.trim()) newErrors.numero = "Le numéro est requis";
-    if (!clientInfo.adresse.trim()) newErrors.adresse = "L'adresse est requise";
+    if (!clientInfo?.nom?.trim()) newErrors.nom = "Le nom est requis";
+    if (!clientInfo?.prenom?.trim()) newErrors.prenom = "Le prénom est requis";
+    if (!clientInfo?.numero?.trim()) newErrors.numero = "Le numéro est requis";
+    if (!clientInfo?.adresse?.trim())
+      newErrors.adresse = "L'adresse est requise";
+
+    // Vérifier qu'il y a des images sélectionnées (optionnel pour les tests)
+    if (
+      !selectedImages ||
+      !Array.isArray(selectedImages) ||
+      selectedImages.length === 0
+    ) {
+      // Pour les tests, on peut continuer sans images
+      console.log("Aucune image sélectionnée, mais on continue pour les tests");
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
   const handleClientInfoChange = (e) => {
     setClientInfo({ ...clientInfo, [e.target.name]: e.target.value });
   };
 
-  const handleValidate = () => {
+  const handleValidate = async () => {
     if (!validateFields()) return;
 
-    const message = `\n Nouvelle commande Memora :\nNom : ${
-      clientInfo.nom
-    }\nPrénom : ${clientInfo.prenom}\nNuméro : ${
-      clientInfo.numero
-    }\nAdresse : ${clientInfo.adresse}\n\nImages :\n${images
-      .map((img, i) => `Image ${i + 1} : ${window.location.origin}${img}`)
-      .join("\n")}`;
-    const encodedMsg = encodeURIComponent(message);
-    window.open(`https://wa.me/21699616660?text=${encodedMsg}`, "_blank");
-    setOpenModal(false);
+    console.log(clientInfo);
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const clientData = {
+        name: clientInfo.nom,
+        lastname: clientInfo.prenom,
+        phone: parseInt(clientInfo.numero),
+        address: clientInfo.adresse,
+      };
+
+      const createdClient = await createClient(clientData);
+
+      const commandeData = {
+        client: createdClient.data._id,
+        images: selectedImages,
+      };
+
+      // Envoyer la commande au backend
+      await createCommande(commandeData);
+
+      setSuccess(true);
+      setOpenModal(false);
+      setSuccessMessage(
+        "Commande créée avec succès ! Vous allez être redirigé vers l'accueil."
+      );
+      setShowSuccessMessage(true);
+
+      // Rediriger vers la page d'accueil après 3 secondes
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (error) {
+      console.error("Erreur lors de la création de la commande:", error);
+      setError(
+        "Erreur lors de la création de la commande. Veuillez réessayer."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleApplyPromo = async () => {
@@ -151,14 +216,6 @@ const PanierPage = () => {
     return `${day} ${month}`;
   };
 
-  const handleValiderPanier = () => {
-    if (!auth.user) {
-      setShowAuthModal(true);
-    } else {
-      setShowConfirm(true);
-    }
-  };
-
   return (
     <>
       <Navbar />
@@ -199,6 +256,167 @@ const PanierPage = () => {
                 Votre panier
               </Typography>
             </Box>
+
+            {/* Affichage des images sélectionnées */}
+            {selectedImages &&
+            Array.isArray(selectedImages) &&
+            selectedImages.length > 0 ? (
+              <Box sx={{ mb: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#176B87",
+                    mb: 2,
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                  }}
+                >
+                  Images sélectionnées ({selectedImages.length})
+                </Typography>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "repeat(3, 1fr)",
+                      sm: "repeat(4, 1fr)",
+                      md: "repeat(5, 1fr)",
+                    },
+                    gap: 1,
+                    mb: 2,
+                  }}
+                >
+                  {selectedImages.map((image, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        position: "relative",
+                        aspectRatio: "1",
+                        borderRadius: 1,
+                        overflow: "hidden",
+                        border: "2px solid #e0e0e0",
+                        "&:hover": {
+                          border: "2px solid #176B87",
+                        },
+                      }}
+                    >
+                      <img
+                        src={image.preview || image.file?.preview}
+                        alt={`Aimant ${index + 1}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 4,
+                  bgcolor: "#f8f9fa",
+                  borderRadius: 2,
+                  border: "2px dashed #dee2e6",
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  sx={{ mb: 2, fontWeight: "bold" }}
+                >
+                  Votre panier est vide
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 3 }}
+                >
+                  Sélectionnez des images pour créer vos aimants personnalisés
+                </Typography>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate("/aimants-photo-carrés")}
+                  sx={{
+                    background:
+                      "linear-gradient(90deg, #176B87 0%, #64b5f6 100%)",
+                    color: "white",
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    textTransform: "uppercase",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(90deg, #176B87 60%, #90caf9 100%)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  Commencer à créer
+                </Button>
+
+                {/* Bouton de test pour le développement - à supprimer en production */}
+                {process.env.NODE_ENV === "development" && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                      const testImages = [
+                        {
+                          file: { name: "test1.jpg" },
+                          preview: "data:image/jpeg;base64,test1",
+                        },
+                        {
+                          file: { name: "test2.jpg" },
+                          preview: "data:image/jpeg;base64,test2",
+                        },
+                      ];
+                      setSelectedImages(testImages);
+                    }}
+                    sx={{ mt: 2, ml: 2 }}
+                  >
+                    Test (dev)
+                  </Button>
+                )}
+              </Box>
+            )}
+
+            {/* Messages d'erreur et de succès */}
+            {error && (
+              <Box
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  bgcolor: "#ffebee",
+                  borderRadius: 1,
+                  border: "1px solid #f44336",
+                }}
+              >
+                <Typography color="error" variant="body2">
+                  {error}
+                </Typography>
+              </Box>
+            )}
+
+            {success && (
+              <Box
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  bgcolor: "#e8f5e8",
+                  borderRadius: 1,
+                  border: "1px solid #4caf50",
+                }}
+              >
+                <Typography color="success" variant="body2">
+                  ✅ Commande créée avec succès ! Redirection en cours...
+                </Typography>
+              </Box>
+            )}
             <Box
               sx={{
                 display: "flex",
@@ -367,7 +585,7 @@ const PanierPage = () => {
                             py: 1,
                           }}
                         >
-                          {price.toFixed(2)} €
+                          {price.toFixed(2)} Dt
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1 }}>
                           <Box
@@ -431,7 +649,7 @@ const PanierPage = () => {
                             py: 1,
                           }}
                         >
-                          {(price * quantity).toFixed(2)} €
+                          {(price * quantity).toFixed(2)} Dt
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -539,7 +757,7 @@ const PanierPage = () => {
                   }}
                 >
                   <Typography>Sous-total</Typography>
-                  <Typography>{(price * quantity).toFixed(2)} €</Typography>
+                  <Typography>{(price * quantity).toFixed(2)} Dt</Typography>
                 </Box>
                 <Box
                   sx={{
@@ -552,7 +770,7 @@ const PanierPage = () => {
                   <Typography>Livraison</Typography>
                   <Box>
                     <Typography component="span">
-                      {shipping.toFixed(2)} €
+                      {shipping.toFixed(2)} Dt
                     </Typography>
                     <Typography
                       component="span"
@@ -577,7 +795,7 @@ const PanierPage = () => {
                   }}
                 >
                   <Typography>Total</Typography>
-                  <Typography>{total} €</Typography>
+                  <Typography>{total} Dt</Typography>
                 </Box>
                 {reduction > 0 && (
                   <Box
@@ -588,7 +806,7 @@ const PanierPage = () => {
                     }}
                   >
                     <Typography>Réduction ({reduction}%)</Typography>
-                    <Typography>-{reductionMontant.toFixed(2)} €</Typography>
+                    <Typography>-{reductionMontant.toFixed(2)} Dt</Typography>
                   </Box>
                 )}
                 {promoError && (
@@ -651,6 +869,7 @@ const PanierPage = () => {
             error={!!errors.numero}
             helperText={errors.numero}
           />
+
           <TextField
             label="Adresse"
             name="adresse"
@@ -666,8 +885,16 @@ const PanierPage = () => {
           <Button onClick={handleCloseModal} color="secondary">
             Annuler
           </Button>
-          <Button onClick={handleValidate} color="primary" variant="contained">
-            Envoyer sur WhatsApp
+          <Button
+            onClick={handleValidate}
+            color="primary"
+            variant="contained"
+            disabled={loading}
+            startIcon={
+              loading ? <CircularProgress size={16} color="inherit" /> : null
+            }
+          >
+            {loading ? "Création en cours..." : "Créer la commande"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -713,35 +940,22 @@ const PanierPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* Modal d'authentification */}
-      <Dialog open={showAuthModal} onClose={() => setShowAuthModal(false)}>
-        <DialogTitle>Connexion requise</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Vous devez avoir un compte pour valider votre commande.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setShowAuthModal(false);
-              navigate("/login");
-            }}
-            color="primary"
-          >
-            Se connecter
-          </Button>
-          <Button
-            onClick={() => {
-              setShowAuthModal(false);
-              navigate("/register");
-            }}
-            color="secondary"
-          >
-            S'inscrire
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+      {/* Message de succès avec Snackbar */}
+      <Snackbar
+        open={showSuccessMessage}
+        autoHideDuration={3000}
+        onClose={() => setShowSuccessMessage(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setShowSuccessMessage(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

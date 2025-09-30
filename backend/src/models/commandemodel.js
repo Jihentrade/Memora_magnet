@@ -6,7 +6,7 @@ const userSchema = Schema({
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "clientmodel",
-    required: false,
+    required: true,
   },
   numeroCommande: {
     type: String,
@@ -17,13 +17,14 @@ const userSchema = Schema({
       return `${year}-${month}${this.incrementValue}`;
     },
   },
-  montantTotal: { type: Number, required: true },
   dateCommande: { type: Date, default: Date.now },
   images: {
-    type: [String], // tableau de chaînes de caractères (URL ou chemins d’accès)
-    required: true,
-    validate: [(val) => val.length > 8, 'Au moins une image est requise'],
+    type: [String],
+    required: false,
+    default: [],
   },
+  montantTotal: { type: Number, default: 0 },
+  modePayement: { type: String, default: "en_attente" },
 });
 
 module.exports = mongoose.model("commandemodel", userSchema);

@@ -92,8 +92,9 @@ const ProductPreview = () => {
   };
 
   const handleAddToCart = () => {
-    // Logique d'ajout au panier
-    navigate("/panier");
+    // Passer les images au panier via l'URL
+    const imagesString = JSON.stringify(selectedImages);
+    navigate(`/panier?images=${encodeURIComponent(imagesString)}`);
   };
 
   const handlePreviewOnFridge = () => {

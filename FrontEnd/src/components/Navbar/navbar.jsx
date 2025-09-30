@@ -12,7 +12,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
@@ -195,17 +194,7 @@ const Navbar = () => {
                 sx={{ fontSize: { sm: "1.5rem", md: "1.75rem" } }}
               />
             </IconButton>
-            <IconButton
-              onClick={() => handleNavigation("/login")}
-              size="small"
-              color="inherit"
-              aria-label="account"
-              sx={{ color: "#000000", padding: "4px" }}
-            >
-              <AccountCircleIcon
-                sx={{ fontSize: { sm: "1.5rem", md: "1.75rem" } }}
-              />
-            </IconButton>
+            
           </Box>
         )}
       </Toolbar>
