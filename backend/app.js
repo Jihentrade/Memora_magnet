@@ -11,7 +11,7 @@ var usersRouter = require("./routes/users");
 var app = express();
 const cron = require("node-cron");
 
-require("dotenv").config({ path: "./config/.env" });
+require("dotenv").config();
 // view engine setup
 app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "pug");
@@ -70,8 +70,11 @@ app.use("/auth", authRouter);
 //**************************************************************************** */
 
 //1-START THE SERVER
-app.listen(4001, function () {
-  console.log("Running on http://127.0.0.1:4001");
-});
+// Vercel serverless - pas besoin de app.listen()
+if (process.env.NODE_ENV !== "production") {
+  app.listen(4001, function () {
+    console.log("Running on http://127.0.0.1:4001");
+  });
+}
 
 module.exports = app;
