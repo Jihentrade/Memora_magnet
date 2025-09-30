@@ -2,11 +2,21 @@
 const isProduction = process.env.NODE_ENV === "production";
 const isVercel = process.env.VERCEL === "1";
 
+// Debug: Afficher les variables d'environnement
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("VERCEL:", process.env.VERCEL);
+console.log("isProduction:", isProduction);
+console.log("isVercel:", isVercel);
+
 // URL du backend selon l'environnement
+// REMPLACEZ par votre vraie URL Vercel
 export const BASE_URL =
   isProduction || isVercel
-    ? "https://memoramagnetbackend.vercel.app/"
+    ? "https://memoramagnetbackend.vercel.app/" 
     : "http://localhost:4001/";
+
+// Debug: Afficher l'URL utilisée
+console.log("BASE_URL utilisée:", BASE_URL);
 
 export const authAPI = {
   REGISTER: "/auth/register",
