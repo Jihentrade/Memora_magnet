@@ -23,7 +23,10 @@ import {
   Delete as DeleteIcon,
   Download as DownloadIcon,
 } from "@mui/icons-material";
-import { getAllCommandes } from "../../services/commande.services";
+import {
+  getAllCommandes,
+  deleteCommande,
+} from "../../services/commande.services";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/footer";
 
@@ -35,6 +38,8 @@ const CommandesAdmin = () => {
   const [selectedCommande, setSelectedCommande] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [commandeToDelete, setCommandeToDelete] = useState(null);
 
   useEffect(() => {
     fetchCommandes();
@@ -75,6 +80,41 @@ const CommandesAdmin = () => {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setSelectedCommande(null);
+  };
+
+  const handleDeleteClick = (commande) => {
+    setCommandeToDelete(commande);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!commandeToDelete) return;
+
+    try {
+      setLoading(true);
+      await deleteCommande(commandeToDelete._id);
+
+      // Mettre à jour la liste des commandes
+      await fetchCommandes();
+
+      setDeleteDialogOpen(false);
+      setCommandeToDelete(null);
+
+      // Message de succès
+      alert("Commande supprimée avec succès !");
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      alert(
+        "Erreur lors de la suppression de la commande. Veuillez réessayer."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setCommandeToDelete(null);
   };
 
   const checkBackendServer = async () => {
@@ -389,7 +429,11 @@ const CommandesAdmin = () => {
                       >
                         Voir
                       </Button>
-                      <IconButton color="error">
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteClick(commande)}
+                        title="Supprimer la commande"
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </Box>
@@ -621,6 +665,60 @@ const CommandesAdmin = () => {
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Fermer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog de confirmation de suppression */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: 2 },
+        }}
+      >
+        <DialogTitle sx={{ backgroundColor: "#d32f2f", color: "white" }}>
+          Confirmer la suppression
+        </DialogTitle>
+        <DialogContent sx={{ p: 3 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Êtes-vous sûr de vouloir supprimer cette commande ?
+          </Typography>
+          {commandeToDelete && (
+            <Box sx={{ mb: 2 }}>
+              <Typography>
+                <strong>Commande:</strong> {commandeToDelete.numeroCommande}
+              </Typography>
+              <Typography>
+                <strong>Client:</strong> {commandeToDelete.client?.prenom}{" "}
+                {commandeToDelete.client?.nom}
+              </Typography>
+              <Typography>
+                <strong>Montant:</strong> {commandeToDelete.montantTotal} Dt
+              </Typography>
+            </Box>
+          )}
+          <Typography color="error" sx={{ fontWeight: "bold" }}>
+            ⚠️ Cette action est irréversible !
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={handleDeleteCancel}
+            color="primary"
+            variant="outlined"
+          >
+            Annuler
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+            disabled={loading}
+          >
+            {loading ? "Suppression..." : "Supprimer"}
           </Button>
         </DialogActions>
       </Dialog>

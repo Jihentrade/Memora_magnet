@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const connectDB = require("./config/connectDB");
 const cors = require("cors");
+const corsMiddleware = require("./src/middlewares/cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var app = express();
@@ -28,13 +29,28 @@ app.use(express.json({ limit: "10mb" }));
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+// Middleware CORS amélioré
+app.use(corsMiddleware);
+
+// Middleware CORS manuel pour gérer les requêtes preflight
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 //2-*******************************CONNECTE THE DATABASE*********************
 

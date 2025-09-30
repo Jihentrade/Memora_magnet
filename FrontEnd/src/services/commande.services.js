@@ -52,6 +52,17 @@ export const getCommandeById = async (id) => {
   }
 };
 
+export const deleteCommande = async (id) => {
+  try {
+    const response = await axiosPrivate.delete(
+      `/commande/deleteCommande/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createCommande = async (commandeData) => {
   const formData = new FormData();
 
